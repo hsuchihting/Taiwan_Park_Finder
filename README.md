@@ -6,7 +6,7 @@
 
 [https://hsuchihting.github.io/Taiwan_Park_Finder/](https://hsuchihting.github.io/Taiwan_Park_Finder/)
 
-此預覽由 GitHub Pages（純靜態主機）自動部署，僅能顯示**示範模式**資料（`data/mockParks.ts`）。GitHub Pages 無法執行伺服器端程式碼，因此不會、也不能連線 Twinkle Hub MCP 或使用真實 API key，以避免金鑰外洩。若要體驗即時資料查詢，請依「本機設定」自行啟動，或部署到支援 Nuxt/Nitro server routes 的平台（見「建置與預覽」）。
+此預覽由 GitHub Pages（純靜態主機）自動部署。GitHub Pages 無法執行伺服器端程式碼，因此不會、也不能連線 Twinkle Hub MCP 或使用真實 API key，以避免金鑰外洩；**專案已移除示範/mock 備用資料，這個純靜態預覽網址目前無法顯示任何搜尋結果。**若要體驗即時資料查詢，請依「本機設定」自行啟動，或部署到支援 Nuxt/Nitro server routes 的平台（見「建置與預覽」）。
 
 ## 功能
 
@@ -14,7 +14,6 @@
 - 可用「親子、有廁所、寵物友善、無障礙」等自然語言搜尋
 - 由伺服器端連接 Twinkle Hub MCP，API key 不會送進瀏覽器
 - 顯示來源資料集、主管機關與授權資訊
-- MCP 暫時無法使用時，自動以示範資料維持基本體驗
 
 ## 本機設定
 

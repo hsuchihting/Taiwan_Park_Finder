@@ -8,6 +8,7 @@ const {
   isLoading,
   source,
   sourceMessage,
+  searchError,
   datasets,
   search
 } = useParkSearch()
@@ -64,10 +65,16 @@ const quickQueries = ['親子遊戲場、有廁所', '寵物友善、有遮蔭',
 
     <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div
-        class="mb-6 flex flex-col gap-2 rounded-xl border px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between"
-        :class="source === 'twinkle-hub' ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-900'"
+        v-if="searchError"
+        class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
       >
-        <p><strong>{{ source === 'twinkle-hub' ? '即時資料' : '示範模式' }}</strong> · {{ sourceMessage }}</p>
+        {{ searchError }}
+      </div>
+      <div
+        v-else
+        class="mb-6 flex flex-col gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <p><strong>即時資料</strong> · {{ sourceMessage }}</p>
         <span v-if="datasets?.length" class="shrink-0 text-xs">來自 {{ datasets.length }} 個開放資料集</span>
       </div>
 

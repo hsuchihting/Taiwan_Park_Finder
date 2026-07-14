@@ -1,5 +1,4 @@
 import { createError, readBody } from 'h3'
-import { mockParks } from '~/data/mockParks'
 import type { FeatureConfidence, Park, ParkFeature, ParkFeatureType, ParkSearchResponse } from '~/types/park'
 import { featureLabels } from '~/utils/parkParser'
 
@@ -135,11 +134,7 @@ export default defineEventHandler(async (event): Promise<ParkSearchResponse> => 
   const apiKey = useRuntimeConfig(event).twinkleHubApiKey
 
   if (!apiKey) {
-    return {
-      parks: mockParks,
-      source: 'mock',
-      message: '尚未設定 Twinkle Hub API key，目前顯示台北市示範資料。'
-    }
+    throw createError({ statusCode: 500, message: '尚未設定 Twinkle Hub API key' })
   }
 
   try {
