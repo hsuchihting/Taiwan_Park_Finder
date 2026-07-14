@@ -12,6 +12,8 @@ export default defineNuxtConfig({
     twinkleHubApiKey: ''
   },
   nitro: {
+    // Cloudflare Workers Builds（WORKERS_CI=1）需要 module worker 輸出；其他環境維持自動偵測
+    preset: process.env.WORKERS_CI ? 'cloudflare_module' : undefined,
     prerender: {
       routes: ['/data/parks.json']
     }
