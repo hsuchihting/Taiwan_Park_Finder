@@ -19,22 +19,38 @@ const parseResponse = <T>(body: string): JsonRpcResponse<T> => {
   return JSON.parse(dataLines.at(-1) || body) as JsonRpcResponse<T>
 }
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 export const createTwinkleClient = async (apiKey: string) => {
   let requestId = 0
 
   const post = async <T>(method: string, params: Record<string, unknown>, sessionId?: string) => {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: 'application/json, text/event-stream',
-        'Content-Type': 'application/json',
-        ...(sessionId ? { 'mcp-session-id': sessionId } : {})
-      },
-      body: JSON.stringify({ jsonrpc: '2.0', id: ++requestId, method, params })
-    })
+    let response!: Response
+    let body = ''
 
-    const body = await response.text()
+    // Twinkle Hub 全域限流 90 次/分鐘；429 時依 retry_after_sec 等待後重試
+    for (let attempt = 0; attempt < 5; attempt++) {
+      response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          Accept: 'application/json, text/event-stream',
+          'Content-Type': 'application/json',
+          ...(sessionId ? { 'mcp-session-id': sessionId } : {})
+        },
+        body: JSON.stringify({ jsonrpc: '2.0', id: ++requestId, method, params })
+      })
+
+      body = await response.text()
+      if (response.status !== 429) break
+
+      let retryAfterSec = Number(response.headers.get('retry-after')) || 30
+      try {
+        retryAfterSec = Number(JSON.parse(body).retry_after_sec) || retryAfterSec
+      } catch {}
+      await sleep((retryAfterSec + 1) * 1000)
+    }
+
     if (!response.ok) {
       throw new Error(`Twinkle Hub ${response.status}: ${body.slice(0, 240)}`)
     }

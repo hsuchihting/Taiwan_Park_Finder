@@ -74,7 +74,7 @@ const quickQueries = ['親子遊戲場、有廁所', '寵物友善、有遮蔭',
         v-else
         class="mb-6 flex flex-col gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 sm:flex-row sm:items-center sm:justify-between"
       >
-        <p><strong>即時資料</strong> · {{ sourceMessage }}</p>
+        <p><strong>Twinkle Hub 開放資料</strong> · {{ sourceMessage }}</p>
         <span v-if="datasets?.length" class="shrink-0 text-xs">來自 {{ datasets.length }} 個開放資料集</span>
       </div>
 
