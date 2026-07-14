@@ -17,11 +17,11 @@ const confidenceLabel: Record<FeatureConfidence, string> = {
 
 <template>
   <span
-    class="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium"
+    class="inline-flex items-center gap-1 rounded-full border-2 px-3 py-1 text-xs font-bold"
     :class="
       props.matched
-        ? 'border-park-leaf bg-emerald-50 text-park-leaf'
-        : 'border-stone-200 bg-white text-stone-600'
+        ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+        : 'border-sky-200 bg-sky-50 text-sky-700'
     "
   >
     {{ featureLabels[props.type] }}

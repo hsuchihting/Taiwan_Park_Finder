@@ -14,11 +14,12 @@ export default <Partial<Config>>{
       },
       colors: {
         park: {
-          leaf: '#1F7A4D',
-          moss: '#566B35',
-          sky: '#D8EEF5',
-          sun: '#F6C453',
-          clay: '#C56A3A'
+          leaf: '#25A95B',
+          moss: '#367A52',
+          sky: '#BEEBFF',
+          sun: '#FFD95A',
+          clay: '#FF7868',
+          lilac: '#B99BFF'
         }
       }
     }

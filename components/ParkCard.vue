@@ -8,14 +8,14 @@ const props = defineProps<{
 </script>
 
 <template>
-  <article class="rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+  <article class="rounded-3xl border-2 border-sky-200 bg-white p-5 shadow-[0_7px_0_#bae6fd] transition hover:-translate-y-1 hover:shadow-[0_9px_0_#86d8f7]">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <p class="text-xs font-semibold text-park-moss">{{ recommendation.park.city }} · {{ recommendation.park.district }}</p>
-        <h2 class="mt-1 text-lg font-bold text-stone-950">{{ recommendation.park.name }}</h2>
+        <p class="text-xs font-bold text-park-moss">🌿 {{ recommendation.park.city }} · {{ recommendation.park.district }}</p>
+        <h2 class="mt-1 text-lg font-black text-stone-900">{{ recommendation.park.name }}</h2>
       </div>
-      <div class="rounded-md bg-stone-900 px-2.5 py-1 text-sm font-semibold text-white">
-        {{ recommendation.score }}
+      <div class="rounded-full border-2 border-amber-300 bg-park-sun px-3 py-1.5 text-sm font-black text-amber-900 shadow-[0_3px_0_#f0b92b]">
+        ⭐ {{ recommendation.score }}
       </div>
     </div>
 
@@ -33,7 +33,7 @@ const props = defineProps<{
       />
     </div>
 
-    <div class="mt-4 flex items-center justify-between border-t border-stone-100 pt-3 text-xs text-stone-500">
+    <div class="mt-4 flex items-center justify-between border-t-2 border-dashed border-sky-100 pt-3 text-xs text-stone-500">
       <a
         v-if="recommendation.park.sourceUrl"
         :href="recommendation.park.sourceUrl"
