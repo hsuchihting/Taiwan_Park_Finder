@@ -118,9 +118,12 @@ const normalizeRow = (
   // 排除文件型資料列（如研究計畫 PDF 附件清單）
   if (/\.(pdf|docx?|xlsx?|odt|ods)$/i.test(name) || /計畫|報告書|研究案/.test(name)) return null
 
-  const cityFromAddress = toTw(address).match(cityPattern)?.[1]
+  const normalizedAddress = toTw(address)
+  const cityFromAddress = normalizedAddress.match(cityPattern)?.[1]
   const cityFromTitle = toTw(dataset.title).match(cityPattern)?.[1]
-  const districtFromAddress = address.match(/([一-鿿]{2,4}(?:區|鄉|鎮|市))/)?.[1]
+  // 先移除縣市名稱，否則「台北市士林區」會先被解析成行政區「台北市」。
+  const addressWithoutCity = cityFromAddress ? normalizedAddress.replace(cityFromAddress, ' ') : normalizedAddress
+  const districtFromAddress = addressWithoutCity.match(/([一-鿿]{1,4}(?:區|鄉|鎮|市))/)?.[1]
   const features: ParkFeature[] = featureRules
     .filter(([, pattern]) => pattern.test(fullText))
     .map(([type]) => ({ type, label: featureLabels[type], confidence: 'official' as FeatureConfidence }))

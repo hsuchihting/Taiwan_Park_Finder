@@ -89,6 +89,7 @@ export const taiwanCities = [
 
 export const parseParkSearchQuery = (raw: string): ParkSearchQuery => {
   const normalizedRaw = raw.trim()
+  const normalizedLocationRaw = normalizedRaw.replace(/臺/g, '台')
   const mustHave = featureRules
     .filter((rule) => includesAny(normalizedRaw, rule.mustHaveKeywords))
     .map((rule) => rule.feature)
@@ -99,8 +100,10 @@ export const parseParkSearchQuery = (raw: string): ParkSearchQuery => {
     .filter((rule) => includesAny(normalizedRaw, rule.intentKeywords))
     .map((rule) => rule.feature)
   const requestedFeatures = unique([...mustHave, ...niceToHave, ...intents])
-  const districtMatch = normalizedRaw.match(/([\u4e00-\u9fff]{2,4}(?:區|鄉|鎮|市))/)
-  const city = taiwanCities.find((candidate) => normalizedRaw.includes(candidate))
+  const city = taiwanCities.find((candidate) => normalizedLocationRaw.includes(candidate))
+  // 縣市名稱也以「市」結尾，須先移除，避免把「台北市」誤判為行政區。
+  const districtText = city ? normalizedLocationRaw.replace(city, ' ') : normalizedLocationRaw
+  const districtMatch = districtText.match(/([\u4e00-\u9fff]{1,4}(?:區|鄉|鎮|市))/)
 
   return {
     rawText: normalizedRaw,
