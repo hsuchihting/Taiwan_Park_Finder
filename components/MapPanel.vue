@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   count: number
-  source: 'twinkle-hub' | 'mock'
+  source: 'twinkle-hub'
   city?: string
 }>()
 </script>
@@ -20,7 +20,7 @@ defineProps<{
       </div>
     </div>
     <div class="border-t border-stone-200 p-4">
-      <h2 class="text-base font-bold text-stone-950">{{ source === 'twinkle-hub' ? 'Twinkle Hub 官方開放資料' : '台北示範資料' }}</h2>
+      <h2 class="text-base font-bold text-stone-950">Twinkle Hub 官方開放資料</h2>
       <p class="mt-1 text-sm leading-6 text-stone-600">
         依縣市、需求與設施條件即時篩選，資料來源與授權資訊保留在結果下方。
       </p>

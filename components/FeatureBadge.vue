@@ -11,7 +11,6 @@ const props = defineProps<{
 const confidenceLabel: Record<FeatureConfidence, string> = {
   official: '官方',
   user_reported: '回報',
-  mock: '模擬',
   inferred: '推測'
 }
 </script>

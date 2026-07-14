@@ -14,8 +14,7 @@ export type ParkFeatureType =
 export type FeatureConfidence =
   | 'official'
   | 'user_reported'
-  | 'inferred'
-  | 'mock';
+  | 'inferred';
 
 export interface ParkFeature {
   type: ParkFeatureType;
@@ -59,7 +58,7 @@ export interface ParkRecommendation {
 
 export interface ParkSearchResponse {
   parks: Park[];
-  source: 'twinkle-hub' | 'mock';
+  source: 'twinkle-hub';
   message?: string;
   datasets?: Array<{
     id: string;

@@ -1,20 +1,9 @@
-import { mockParks } from '~/data/mockParks'
 import type { ParkRecommendation, ParkSearchResponse } from '~/types/park'
 import { parseParkSearchQuery } from '~/utils/parkParser'
 import { rankParks } from '~/utils/parkScoring'
 
 export interface ParkSearchProvider {
   search(queryText: string, city?: string): Promise<ParkSearchResponse>
-}
-
-const mockParkSearchProvider: ParkSearchProvider = {
-  async search() {
-    return {
-      parks: mockParks,
-      source: 'mock',
-      message: '尚未設定 Twinkle Hub API key，目前顯示台北市示範資料。'
-    }
-  }
 }
 
 const twinkleParkSearchProvider: ParkSearchProvider = {
@@ -32,22 +21,18 @@ export const useParkSearch = (provider: ParkSearchProvider = twinkleParkSearchPr
   const hasSearched = ref(false)
   const selectedCity = ref('')
   const isLoading = ref(false)
-  const source = ref<ParkSearchResponse['source']>('mock')
+  const source = ref<ParkSearchResponse['source']>('twinkle-hub')
   const sourceMessage = ref('')
+  const searchError = ref('')
   const datasets = ref<ParkSearchResponse['datasets']>([])
 
   const search = async (nextQuery = query.value) => {
     query.value = nextQuery
     isLoading.value = true
+    searchError.value = ''
 
     try {
-      let response: ParkSearchResponse
-      try {
-        response = await provider.search(nextQuery, selectedCity.value || undefined)
-      } catch {
-        response = await mockParkSearchProvider.search(nextQuery, selectedCity.value || undefined)
-        response.message = 'Twinkle Hub 暫時無法連線，已切換為台北市示範資料。'
-      }
+      const response = await provider.search(nextQuery, selectedCity.value || undefined)
 
       const parsedQuery = parseParkSearchQuery(
         [selectedCity.value, nextQuery].filter(Boolean).join(' ')
@@ -57,6 +42,8 @@ export const useParkSearch = (provider: ParkSearchProvider = twinkleParkSearchPr
       sourceMessage.value = response.message || ''
       datasets.value = response.datasets || []
       hasSearched.value = true
+    } catch {
+      searchError.value = 'Twinkle Hub 暫時無法完成查詢，請稍後再試。'
     } finally {
       isLoading.value = false
     }
@@ -72,6 +59,7 @@ export const useParkSearch = (provider: ParkSearchProvider = twinkleParkSearchPr
     isLoading,
     source,
     sourceMessage,
+    searchError,
     datasets,
     search
   }

@@ -4,7 +4,6 @@ import { featureLabels } from '~/utils/parkParser'
 const confidenceScore = {
   official: 5,
   user_reported: 3,
-  mock: 1,
   inferred: 0
 } as const
 
@@ -50,10 +49,6 @@ const makeConfidenceLabel = (park: Park, matchedFeatures: ParkFeatureType[]) => 
 
   if (matched.some((feature) => feature.confidence === 'user_reported')) {
     return '含使用者回報'
-  }
-
-  if (matched.some((feature) => feature.confidence === 'mock')) {
-    return '模擬資料'
   }
 
   return '推測資料'
