@@ -7,9 +7,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "predeploy": "cross-env NUXT_APP_BASE_URL=/Taiwan_Park_Finder/ nuxt generate",
-    "deploy": "gh-pages -d .output/public --nojekyll"
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "6.12.2",
@@ -18,8 +16,6 @@
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
-    "cross-env": "^10.1.0",
-    "gh-pages": "^6.3.0",
     "typescript": "5.5.3",
     "vue-tsc": "2.0.29"
   }

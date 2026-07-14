@@ -4,13 +4,11 @@
 
 ## 線上預覽
 
-[https://hsuchihting.github.io/Taiwan_Park_Finder/](https://hsuchihting.github.io/Taiwan_Park_Finder/)
+[https://taiwanparkfinder.hsuchihting.workers.dev/](https://taiwanparkfinder.hsuchihting.workers.dev/)
 
-此預覽由 GitHub Pages（純靜態主機）自動部署，顯示的是 **GitHub Actions 建置時向 Twinkle Hub 擷取的真實資料快照**（每日自動重新建置更新）。API key 只存在於 CI 的建置環境（repo secret），不會進入瀏覽器或靜態檔案。
+部署於 **Cloudflare Workers**（透過 Workers Builds 連接此 repo，push `main` 即自動建置部署）。瀏覽器透過 `/api/parks` server route 即時查詢 Twinkle Hub，API key 以 Worker Secret 保存於伺服器端，不會進入瀏覽器。
 
-> 為什麼不即時查詢？Twinkle Hub MCP 端點未開放 CORS，瀏覽器無法直連；純靜態主機也無法安全保存 API key。建置時烘焙快照（`/data/parks.json`）是兩者兼顧的做法。若要體驗即時查詢，請依「本機設定」自行啟動，或部署到支援 Nuxt/Nitro server routes 的平台。
-
-**部署前置需求**：在 repo 的 **Settings → Secrets and variables → Actions** 新增 secret `NUXT_TWINKLE_HUB_API_KEY`，並在 **Settings → Pages → Source** 選擇 **GitHub Actions**。
+**部署前置需求**：在 Worker 的 **Settings → Variables and Secrets** 新增 Secret `NUXT_TWINKLE_HUB_API_KEY`。部署設定見 `wrangler.jsonc`（Nitro 於 Workers Builds 環境自動採用 `cloudflare_module` preset）。
 
 ## 功能
 
@@ -53,21 +51,15 @@ npm run preview
 ## 串接架構
 
 ```text
-（伺服器部署）
 瀏覽器
   -> POST /api/parks（不含 API key）
-  -> Nuxt/Nitro server
+  -> Nuxt/Nitro server（Cloudflare Worker）
   -> Twinkle Hub MCP（Authorization: Bearer ...）
   -> 搜尋資料集、查詢資料列、正規化公園欄位
   -> 回傳安全的公園與資料來源資訊
 
-（靜態部署，如 GitHub Pages）
-GitHub Actions 建置
-  -> nuxt generate 預先渲染 /data/parks.json（逐縣市呼叫 Twinkle Hub MCP）
-  -> 靜態快照與網站一起部署
-瀏覽器
-  -> POST /api/parks 失敗（無伺服器）
-  -> 自動改讀 /data/parks.json 快照，於前端排序推薦
+備援：建置時會預先渲染 /data/parks.json 資料快照；
+若 /api/parks 不可用（如純靜態主機），前端自動改讀快照並在本地排序推薦。
 ```
 
 目前依 Twinkle Hub 線上 MCP 實際提供的工具呼叫：
