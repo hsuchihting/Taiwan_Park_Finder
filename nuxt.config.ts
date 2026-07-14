@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   ssr: false,
-  compatibilityDate: '2024-07-01',
+  // 2024-09-19 之後 Nitro 的 cloudflare_module preset 才會使用 Workers Static Assets（非 legacy Workers Sites）
+  compatibilityDate: '2026-07-01',
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
