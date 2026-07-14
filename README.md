@@ -2,6 +2,12 @@
 
 以 Nuxt 3 製作的全台灣公園探索網站，透過 Twinkle Hub MCP 查詢台灣政府開放資料，並依使用者的自然語言條件排序推薦結果。
 
+## 線上預覽
+
+[https://hsuchihting.github.io/Taiwan_Park_Finder/](https://hsuchihting.github.io/Taiwan_Park_Finder/)
+
+此預覽由 GitHub Pages（純靜態主機）自動部署，僅能顯示**示範模式**資料（`data/mockParks.ts`）。GitHub Pages 無法執行伺服器端程式碼，因此不會、也不能連線 Twinkle Hub MCP 或使用真實 API key，以避免金鑰外洩。若要體驗即時資料查詢，請依「本機設定」自行啟動，或部署到支援 Nuxt/Nitro server routes 的平台（見「建置與預覽」）。
+
 ## 功能
 
 - 支援台灣 22 縣市選擇與逐縣市查詢

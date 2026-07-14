@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     twinkleHubApiKey: ''
   },
   app: {
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
       title: 'Taiwan Park Finder',
       meta: [
