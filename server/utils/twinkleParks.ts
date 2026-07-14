@@ -94,6 +94,16 @@ const featureRules: Array<[ParkFeatureType, RegExp]> = [
   ['trail', /步道|步行|健走/]
 ]
 
+// 政府資料多用「臺」、前端縣市清單用「台」，比對前先統一
+const toTw = (value: string) => value.replace(/臺/g, '台')
+
+const cityPattern = /(基隆市|台北市|新北市|桃園市|新竹[市縣]|苗栗縣|台中市|彰化縣|南投縣|雲林縣|嘉義[市縣]|台南市|高雄市|屏東縣|宜蘭縣|花蓮縣|台東縣|澎湖縣|金門縣|連江縣)/
+
+// 只保留地方公園／綠地設施類資料集；排除國家公園與研究計畫、報告、認養清冊等文件型資料集
+const isLocalParkDataset = (title: string) =>
+  /公園|綠地|兒童遊戲場/.test(title) &&
+  !/國家公園|國家自然公園|地質公園|計畫|報告|研究|調查|監測|認養|稽查|工程|願景|彙整|文稿/.test(title)
+
 const normalizeRow = (
   row: Record<string, unknown>,
   dataset: DatasetHit,
@@ -105,8 +115,11 @@ const normalizeRow = (
   const address = getValue(row, aliases.address)
   const fullText = Object.values(row).filter(Boolean).join(' ')
   if (!name || (!/公園|綠地|遊憩|森林|園區/.test(`${name} ${fullText}`))) return null
+  // 排除文件型資料列（如研究計畫 PDF 附件清單）
+  if (/\.(pdf|docx?|xlsx?|odt|ods)$/i.test(name) || /計畫|報告書|研究案/.test(name)) return null
 
-  const cityFromAddress = address.match(/(基隆市|台北市|新北市|桃園市|新竹[市縣]|苗栗縣|台中市|彰化縣|南投縣|雲林縣|嘉義[市縣]|台南市|高雄市|屏東縣|宜蘭縣|花蓮縣|台東縣|澎湖縣|金門縣|連江縣)/)?.[1]
+  const cityFromAddress = toTw(address).match(cityPattern)?.[1]
+  const cityFromTitle = toTw(dataset.title).match(cityPattern)?.[1]
   const districtFromAddress = address.match(/([一-鿿]{2,4}(?:區|鄉|鎮|市))/)?.[1]
   const features: ParkFeature[] = featureRules
     .filter(([, pattern]) => pattern.test(fullText))
@@ -115,8 +128,9 @@ const normalizeRow = (
   return {
     id: `${dataset.dataset_id}-${index}-${name}`,
     name,
-    city: getValue(row, aliases.city) || cityFromAddress || requestedCity || '未標示縣市',
-    district: getValue(row, aliases.district) || districtFromAddress || '未標示行政區',
+    // 欄位名模糊比對可能誤中無關欄位（如編號），值須像縣市名才採用；再依序用地址、資料集標題推斷
+    city: (/[市縣]$/.test(getValue(row, aliases.city)) ? toTw(getValue(row, aliases.city)) : '') || cityFromAddress || cityFromTitle || requestedCity || '未標示縣市',
+    district: (/[區鄉鎮市]$/.test(getValue(row, aliases.district)) ? getValue(row, aliases.district) : '') || districtFromAddress || '未標示行政區',
     address: address || '原始資料未提供地址',
     latitude: Number(getValue(row, aliases.latitude)) || undefined,
     longitude: Number(getValue(row, aliases.longitude)) || undefined,
@@ -137,13 +151,24 @@ export const fetchTwinkleParks = async (
   client: TwinkleClient,
   city?: string
 ): Promise<{ parks: Park[]; datasets: NonNullable<ParkSearchResponse['datasets']> }> => {
-  const datasetResponse = await client.callTool<unknown>('search_datasets', {
-    query: city ? `${city}公園` : '公園',
-    limit: 6
-  })
-  const datasets = extractArray<unknown>(datasetResponse, ['hits', 'datasets', 'results', 'items', 'data'])
-    .map(normalizeDataset)
-    .filter((dataset): dataset is DatasetHit => Boolean(dataset))
+  // 「公園」單獨查詢會被國家公園研究文獻洗版；帶縣市或改用設施類詞彙才能命中地方公園資料集
+  // 政府資料集標題慣用「臺」，查詢詞先轉換才搜得到（如「台北市」→「臺北市」）
+  const twCity = city?.replace(/台/g, '臺')
+  const queries = twCity ? [`${twCity}公園`, `${twCity}公園綠地`] : ['公園綠地', '公園設施', '兒童遊戲場']
+  const searchResponses = await Promise.all(
+    queries.map((query) => client.callTool<unknown>('search_datasets', { query, limit: 6 }))
+  )
+  const datasetMap = new Map<string, DatasetHit>()
+  for (const response of searchResponses) {
+    for (const value of extractArray<unknown>(response, ['hits', 'datasets', 'results', 'items', 'data'])) {
+      const dataset = normalizeDataset(value)
+      if (dataset && isLocalParkDataset(dataset.title)) datasetMap.set(dataset.dataset_id, dataset)
+    }
+  }
+  // 指定縣市時優先採用標題含該縣市的資料集，避免語意搜尋混入其他縣市
+  const allDatasets = [...datasetMap.values()]
+  const cityDatasets = city ? allDatasets.filter((dataset) => toTw(dataset.title).includes(toTw(city))) : []
+  const datasets = cityDatasets.length ? cityDatasets : allDatasets
 
   const results = await Promise.all(datasets.slice(0, 6).map(async (dataset) => {
     const [detailResponse, rowsResponse] = await Promise.all([
@@ -162,7 +187,7 @@ export const fetchTwinkleParks = async (
     results
       .flatMap(({ dataset, detail, rows }) => rows.map((row, index) => normalizeRow(row, dataset, detail, index, city)))
       .filter((park): park is Park => Boolean(park))
-      .filter((park) => !city || park.city.includes(city) || park.address.includes(city))
+      .filter((park) => !city || toTw(park.city).includes(toTw(city)) || toTw(park.address).includes(toTw(city)))
   )
 
   return {

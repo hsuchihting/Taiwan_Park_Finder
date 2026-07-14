@@ -84,8 +84,8 @@ export const scorePark = (park: Park, query: ParkSearchQuery): ParkRecommendatio
   }
 }
 
-export const rankParks = (parks: Park[], query: ParkSearchQuery): ParkRecommendation[] =>
-  parks
+export const rankParks = (parks: Park[], query: ParkSearchQuery): ParkRecommendation[] => {
+  const ranked = parks
     .filter((park) => !query.city || park.city.includes(query.city) || park.address.includes(query.city))
     .filter((park) => !query.district || park.district.includes(query.district) || park.address.includes(query.district))
     .map((park) => scorePark(park, query))
@@ -93,4 +93,8 @@ export const rankParks = (parks: Park[], query: ParkSearchQuery): ParkRecommenda
       if (b.score !== a.score) return b.score - a.score
       return b.matchedFeatures.length - a.matchedFeatures.length
     })
-    .filter((recommendation) => recommendation.score > 0 || query.rawText.length === 0)
+
+  // 開放資料常缺設施欄位（缺資料不代表沒有設施），全數低分時仍顯示排序結果供參考
+  const positives = ranked.filter((recommendation) => recommendation.score > 0)
+  return positives.length ? positives : ranked
+}
