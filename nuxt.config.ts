@@ -11,6 +11,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     twinkleHubApiKey: ''
   },
+  nitro: {
+    prerender: {
+      routes: ['/data/parks.json']
+    }
+  },
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
