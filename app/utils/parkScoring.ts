@@ -1,5 +1,5 @@
-import type { Park, ParkFeatureType, ParkRecommendation, ParkSearchQuery } from '~/types/park'
-import { featureLabels } from '~/utils/parkParser'
+import type { Park, ParkFeatureType, ParkRecommendation, ParkSearchQuery } from '#shared/types/park'
+import { featureLabels } from '#shared/utils/parkParser'
 
 const confidenceScore = {
   official: 5,

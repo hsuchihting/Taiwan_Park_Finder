@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   ssr: false,
-  // 2024-09-19 之後 Nitro 的 cloudflare_module preset 才會使用 Workers Static Assets（非 legacy Workers Sites）
+  // Cloudflare Workers Builds 會注入 WORKERS_CI；本機維持 Node preset 方便 preview。
   compatibilityDate: '2026-07-01',
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
@@ -13,11 +13,14 @@ export default defineNuxtConfig({
     twinkleHubApiKey: ''
   },
   nitro: {
-    // Cloudflare Workers Builds（WORKERS_CI=1）需要 module worker 輸出；其他環境維持自動偵測
-    preset: process.env.WORKERS_CI ? 'cloudflare_module' : undefined,
-    prerender: {
-      routes: ['/data/parks.json']
-    }
+    // Workers Static Assets 的官方 Nitro preset。
+    preset: process.env.WORKERS_CI ? 'cloudflare' : undefined,
+    // 本地驗證可用 SKIP_PRERENDER=1 避免依賴外部資料服務；CI/正式環境仍會產生靜態資料。
+    prerender: process.env.SKIP_PRERENDER === '1'
+      ? undefined
+      : {
+          routes: ['/data/parks.json']
+        }
   },
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',

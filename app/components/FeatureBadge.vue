@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FeatureConfidence, ParkFeatureType } from '~/types/park'
-import { featureLabels } from '~/utils/parkParser'
+import type { FeatureConfidence, ParkFeatureType } from '#shared/types/park'
+import { featureLabels } from '#shared/utils/parkParser'
 
 const props = defineProps<{
   type: ParkFeatureType

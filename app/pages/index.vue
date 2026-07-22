@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { taiwanCities } from '~/utils/parkParser'
+import { taiwanCities } from '#shared/utils/parkParser'
 
 const {
   query,

@@ -1,5 +1,5 @@
-import type { ParkRecommendation, ParkSearchResponse } from '~/types/park'
-import { parseParkSearchQuery } from '~/utils/parkParser'
+import type { ParkRecommendation, ParkSearchResponse } from '#shared/types/park'
+import { parseParkSearchQuery } from '#shared/utils/parkParser'
 import { rankParks } from '~/utils/parkScoring'
 
 export interface ParkSearchProvider {

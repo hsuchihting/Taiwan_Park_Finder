@@ -1,4 +1,4 @@
-import type { ParkFeatureType, ParkSearchQuery } from '~/types/park'
+import type { ParkFeatureType, ParkSearchQuery } from '#shared/types/park'
 
 type FeatureRule = {
   feature: ParkFeatureType

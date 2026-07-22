@@ -1,5 +1,5 @@
-import type { ParkSearchResponse } from '~/types/park'
-import { taiwanCities } from '~/utils/parkParser'
+import type { ParkSearchResponse } from '#shared/types/park'
+import { taiwanCities } from '#shared/utils/parkParser'
 
 // Prerendered during `nuxt generate` (see nitro.prerender in nuxt.config.ts) so the
 // static GitHub Pages build ships a Twinkle Hub snapshot without exposing the API key.

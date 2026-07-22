@@ -5,18 +5,25 @@
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
+    "build:cloudflare": "nuxt build --preset=cloudflare",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "typecheck": "nuxt prepare && vue-tsc -b --noEmit",
     "postinstall": "nuxt prepare"
   },
+  "engines": {
+    "node": ">=24.11.1"
+  },
   "dependencies": {
-    "@nuxtjs/tailwindcss": "6.12.2",
-    "nuxt": "3.12.4",
-    "vue": "3.4.31"
+    "@nuxtjs/tailwindcss": "6.14.0",
+    "nuxt": "4.5.0",
+    "vue": "3.5.40",
+    "vue-router": "5.2.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
-    "typescript": "5.5.3",
-    "vue-tsc": "2.0.29"
+    "@types/node": "24.13.3",
+    "typescript": "5.9.3",
+    "vue-tsc": "3.3.7",
+    "wrangler": "4.113.0"
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ParkRecommendation } from '~/types/park'
+import type { ParkRecommendation } from '#shared/types/park'
 
 const props = defineProps<{
   recommendation: ParkRecommendation

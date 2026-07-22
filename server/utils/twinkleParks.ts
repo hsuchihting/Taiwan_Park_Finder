@@ -1,5 +1,5 @@
-import type { FeatureConfidence, Park, ParkFeature, ParkFeatureType, ParkSearchResponse } from '~/types/park'
-import { featureLabels } from '~/utils/parkParser'
+import type { FeatureConfidence, Park, ParkFeature, ParkFeatureType, ParkSearchResponse } from '#shared/types/park'
+import { featureLabels } from '#shared/utils/parkParser'
 
 export type DatasetHit = {
   dataset_id: string

@@ -1,5 +1,5 @@
 import { createError, readBody } from 'h3'
-import type { ParkSearchResponse } from '~/types/park'
+import type { ParkSearchResponse } from '#shared/types/park'
 
 export default defineEventHandler(async (event): Promise<ParkSearchResponse> => {
   const body = await readBody<{ query?: string; city?: string }>(event)
