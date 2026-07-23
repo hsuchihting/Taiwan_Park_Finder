@@ -10,7 +10,9 @@ export default defineNuxtConfig({
     typeCheck: true
   },
   runtimeConfig: {
-    twinkleHubApiKey: ''
+    twinkleHubApiKey: '',
+    geocoderBaseUrl: '',
+    geocoderUserAgent: ''
   },
   nitro: {
     // Cloudflare Workers Builds（WORKERS_CI=1）需要 module worker 輸出；其他環境維持自動偵測

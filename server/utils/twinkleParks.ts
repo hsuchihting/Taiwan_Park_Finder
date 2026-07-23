@@ -134,9 +134,12 @@ const normalizeRow = (
     // 欄位名模糊比對可能誤中無關欄位（如編號），值須像縣市名才採用；再依序用地址、資料集標題推斷
     city: (/[市縣]$/.test(getValue(row, aliases.city)) ? toTw(getValue(row, aliases.city)) : '') || cityFromAddress || cityFromTitle || requestedCity || '未標示縣市',
     district: (/[區鄉鎮市]$/.test(getValue(row, aliases.district)) ? getValue(row, aliases.district) : '') || districtFromAddress || '未標示行政區',
-    address: address || '原始資料未提供地址',
+    address: address || undefined,
     latitude: Number(getValue(row, aliases.latitude)) || undefined,
     longitude: Number(getValue(row, aliases.longitude)) || undefined,
+    sourceDatasetId: dataset.dataset_id,
+    locationStatus: address ? 'original' : 'unresolved',
+    locationSource: address ? 'twinkle-hub' : undefined,
     description: getValue(row, aliases.description) || undefined,
     features,
     sourceName: dataset.title,
@@ -190,7 +193,7 @@ export const fetchTwinkleParks = async (
     results
       .flatMap(({ dataset, detail, rows }) => rows.map((row, index) => normalizeRow(row, dataset, detail, index, city)))
       .filter((park): park is Park => Boolean(park))
-      .filter((park) => !city || toTw(park.city).includes(toTw(city)) || toTw(park.address).includes(toTw(city)))
+      .filter((park) => !city || toTw(park.city).includes(toTw(city)) || toTw(park.address || '').includes(toTw(city)))
   )
 
   return {

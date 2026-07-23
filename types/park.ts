@@ -27,9 +27,13 @@ export interface Park {
   name: string;
   city: string;
   district: string;
-  address: string;
+  address?: string;
   latitude?: number;
   longitude?: number;
+  sourceDatasetId?: string;
+  locationStatus?: 'original' | 'enriched' | 'unresolved';
+  locationSource?: 'twinkle-hub' | 'openstreetmap';
+  locationSourceUrl?: string;
   features: ParkFeature[];
   description?: string;
   sourceName?: string;

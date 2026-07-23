@@ -86,8 +86,8 @@ export const scorePark = (park: Park, query: ParkSearchQuery): ParkRecommendatio
 
 export const rankParks = (parks: Park[], query: ParkSearchQuery): ParkRecommendation[] => {
   const ranked = parks
-    .filter((park) => !query.city || park.city.includes(query.city) || park.address.includes(query.city))
-    .filter((park) => !query.district || park.district.includes(query.district) || park.address.includes(query.district))
+    .filter((park) => !query.city || park.city.includes(query.city) || (park.address || '').includes(query.city))
+    .filter((park) => !query.district || park.district.includes(query.district) || (park.address || '').includes(query.district))
     .map((park) => scorePark(park, query))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score

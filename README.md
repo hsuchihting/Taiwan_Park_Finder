@@ -46,6 +46,21 @@ npm run build
 npm run preview
 ```
 
+## Google Maps 定位與缺址補值
+
+每張公園卡片提供 Google Maps 按鈕：有座標時以座標落點，缺少座標時以公園名稱與地區搜尋。Google Maps URL 不需要 API key。
+
+原始資料缺少地址的公園會由伺服器使用 Nominatim-compatible OpenStreetMap geocoder 補值，並寫入 Cloudflare D1；Google Maps 回傳內容不會被永久保存。OSM 資料需顯示 attribution，且公共 Nominatim 服務須遵守每秒一請求與 User-Agent 規範。
+
+首次部署需建立 D1 database，將 `wrangler.jsonc` 的 `REPLACE_WITH_D1_DATABASE_ID` 換成實際 ID，然後執行：
+
+```bash
+npm run db:migrate
+PARK_APP_URL=https://your-worker.example.com npm run enrich:locations
+```
+
+`PARK_ENRICH_ROUNDS` 可調整補值輪數；補值腳本可重複執行，D1 已有的項目會直接使用快取。
+
 部署時，請在主機平台的伺服器端環境變數設定 `NUXT_TWINKLE_HUB_API_KEY`。純靜態主機無法安全保存 API key；必須使用能執行 Nuxt/Nitro server routes 的環境。
 
 ## 串接架構
