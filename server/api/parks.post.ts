@@ -12,7 +12,8 @@ export default defineEventHandler(async (event): Promise<ParkSearchResponse> => 
 
   try {
     const client = await createTwinkleClient(apiKey)
-    const { parks, datasets } = await fetchTwinkleParks(client, city || undefined)
+    const { parks: rawParks, datasets } = await fetchTwinkleParks(client, city || undefined)
+    const parks = await enrichMissingParkLocations(event, rawParks)
 
     return {
       parks,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ParkRecommendation } from '#shared/types/park'
+import { buildGoogleMapsUrl, hasParkCoordinates } from '~/utils/googleMaps'
 
 const props = defineProps<{
   recommendation: ParkRecommendation
@@ -19,7 +20,10 @@ const props = defineProps<{
       </div>
     </div>
 
-    <p class="mt-2 text-sm leading-6 text-stone-600">{{ recommendation.park.address }}</p>
+    <p class="mt-2 text-sm leading-6 text-stone-600">
+      {{ recommendation.park.address || '原始資料未提供地址' }}
+      <span v-if="recommendation.park.locationSource === 'openstreetmap'" class="ml-1 text-xs text-stone-400">（地址：OpenStreetMap）</span>
+    </p>
     <p v-if="recommendation.park.description" class="mt-2 line-clamp-2 text-sm leading-6 text-stone-500">{{ recommendation.park.description }}</p>
     <p class="mt-3 text-sm leading-6 text-stone-700">{{ recommendation.reason }}</p>
 
@@ -32,6 +36,16 @@ const props = defineProps<{
         :matched="recommendation.matchedFeatures.includes(feature.type)"
       />
     </div>
+
+    <a
+      :href="buildGoogleMapsUrl(recommendation.park)"
+      class="mt-4 inline-flex min-h-10 items-center rounded-xl border-2 border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-800 shadow-[0_3px_0_#86efac] transition hover:-translate-y-0.5 hover:bg-emerald-100"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      📍 {{ hasParkCoordinates(recommendation.park) ? '在 Google Maps 查看' : '在 Google Maps 搜尋' }}
+    </a>
+    <p v-if="!hasParkCoordinates(recommendation.park)" class="mt-2 text-xs text-stone-400">目前沒有可用座標，將以名稱與地區搜尋。</p>
 
     <div class="mt-4 flex items-center justify-between border-t-2 border-dashed border-sky-100 pt-3 text-xs text-stone-500">
       <a

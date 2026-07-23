@@ -10,7 +10,9 @@ export default defineNuxtConfig({
     typeCheck: true
   },
   runtimeConfig: {
-    twinkleHubApiKey: ''
+    twinkleHubApiKey: '',
+    geocoderBaseUrl: '',
+    geocoderUserAgent: ''
   },
   nitro: {
     // Workers Static Assets 的官方 Nitro preset。

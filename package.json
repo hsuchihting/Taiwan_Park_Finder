@@ -9,6 +9,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "typecheck": "nuxt prepare && vue-tsc -b --noEmit",
+    "db:migrate": "wrangler d1 migrations apply DB --remote",
+    "db:seed:build": "node scripts/build-location-seed.mjs",
+    "enrich:locations": "node scripts/enrich-park-locations.mjs",
     "postinstall": "nuxt prepare"
   },
   "engines": {

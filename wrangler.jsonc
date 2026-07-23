@@ -1,15 +1,25 @@
 {
-  "$schema": "https://unpkg.com/wrangler/config-schema.json",
-  // 名稱需與 Cloudflare 上既有的 Worker 一致（taiwanparkfinder.hsuchihting.workers.dev）
-  "name": "taiwanparkfinder",
-  "main": "./.output/server/index.mjs",
-  "compatibility_date": "2026-07-01",
-  "compatibility_flags": ["nodejs_compat"],
-  "assets": {
-    "binding": "ASSETS",
-    "directory": "./.output/public"
-  },
-  "observability": {
-    "enabled": true
-  }
+	"$schema": "https://unpkg.com/wrangler/config-schema.json",
+	// 名稱需與 Cloudflare 上既有的 Worker 一致（taiwanparkfinder.hsuchihting.workers.dev）
+	"name": "taiwanparkfinder",
+	"main": "./.output/server/index.mjs",
+	"compatibility_date": "2026-07-01",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./.output/public"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "taiwan-park-locations",
+			"database_id": "9ee35225-258a-4700-889a-604e9c9a21a8",
+			"migrations_dir": "server/db/migrations"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
 }
