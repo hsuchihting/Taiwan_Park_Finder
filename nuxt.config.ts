@@ -15,8 +15,8 @@ export default defineNuxtConfig({
     geocoderUserAgent: ''
   },
   nitro: {
-    // Workers Static Assets 的官方 Nitro preset。
-    preset: process.env.WORKERS_CI ? 'cloudflare' : undefined,
+    // D1 binding 需要 ES module Worker，使用 Nitro 的 module preset。
+    preset: process.env.WORKERS_CI ? 'cloudflare_module' : undefined,
     // 本地驗證可用 SKIP_PRERENDER=1 避免依賴外部資料服務；CI/正式環境仍會產生靜態資料。
     prerender: process.env.SKIP_PRERENDER === '1'
       ? undefined
